@@ -291,6 +291,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 30px;background:#04070d}
   form.qu,.ct-info,.roi-card,.roi-res{padding:26px 22px}
   .float-btns{right:14px;bottom:14px}
 }
+.lang{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:700 12.5px var(--font);padding:9px 12px;cursor:pointer;transition:.2s}
+.lang button.on{background:rgba(34,211,238,.15);color:var(--cyan)}
 </style>
 </head>
 <body>
@@ -313,6 +316,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 30px;background:#04070d}
       <a href="#contact" style="color:var(--cyan)">도입문의</a>
     </nav>
     <div style="display:flex;gap:10px;align-items:center">
+      <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" data-l="ko">KO</button><button type="button" data-l="en">EN</button></div>
       <a href="#contact" class="btn btn-p btn-sm nav-cta">무료 현장진단 신청</a>
       <button class="hamb" id="hamb" aria-label="메뉴">☰</button>
     </div>
@@ -579,10 +583,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 30px;background:#04070d}
     <div class="sec-head rv"><span class="eyebrow">● CONTACT</span><h2>무료 현장진단 신청</h2><p>샘플 테스트·견적·정부지원 상담까지. 영업일 기준 <b style="color:var(--cyan)">24시간 이내</b>에 전문 엔지니어가 직접 연락드립니다.</p></div>
     <div class="ct-grid">
       <div class="ct-info rv">
-        <h3>📞 031-123-4567</h3>
-        <p>평일 09:00 – 18:00 · 주말/공휴일 긴급대응 운영<br>카카오톡 채널 <b style="color:var(--lime)">@비전오토메이션</b> 실시간 상담</p>
+        <h3>📞 <a href="tel:+821038820769">010-3882-0769</a></h3>
+        <p>평일 09:00 – 18:00 · 주말/공휴일 긴급대응 운영</p>
         <div class="ct-li"><span class="ic">📍</span><div><b>본사 · 광학연구소</b>경기도 수원시 영통구 광교로 123, 테크노밸리 B동 7층</div></div>
-        <div class="ct-li"><span class="ic">✉️</span><div><b>이메일</b><a href="mailto:sales@vision-automation.kr">sales@vision-automation.kr</a></div></div>
+        <div class="ct-li"><span class="ic">✉️</span><div><b>이메일</b><a href="mailto:90m.official@gmail.com">90m.official@gmail.com</a></div></div>
         <div class="ct-li"><span class="ic">🏭</span><div><b>생산공장</b>경기도 화성시 동탄산단로 45 (장비 제작·FAT)</div></div>
         <div class="ct-li"><span class="ic">🎁</span><div><b>지금 신청 시 혜택</b>무상 샘플 테스트 + 광학 리포트 + 구축사례집 PDF 증정</div></div>
       </div>
@@ -613,7 +617,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 30px;background:#04070d}
     <div class="ft-grid">
       <div>
         <a class="logo" href="#top" style="margin-bottom:16px"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3" stroke="#a3e635"/></svg></span><span class="t">비전오토메이션<small>VISION-AUTOMATION</small></span></a>
-        <div class="ft-info">비전오토메이션 주식회사 · 대표이사 김비전<br>사업자등록번호 123-45-67890 · 경기도 수원시 영통구 광교로 123<br>Tel 031-123-4567 · Fax 031-123-4568<br>© 2026 Vision-Automation Co., Ltd. All rights reserved.</div>
+        <div class="ft-info">비전오토메이션 주식회사 · 대표이사 김비전<br>사업자등록번호 123-45-67890 · 경기도 수원시 영통구 광교로 123<br>Tel 010-3882-0769 · Email 90m.official@gmail.com<br>© 2026 Vision-Automation Co., Ltd. All rights reserved.</div>
       </div>
       <div><h5>솔루션</h5><a href="#solutions">AI 외관검사</a><a href="#solutions">정밀 치수측정</a><a href="#solutions">OCR·라벨검증</a><a href="#solutions">로봇 가이던스</a></div>
       <div><h5>회사소개</h5><a href="#tech">기술력</a><a href="#cases">레퍼런스</a><a href="#notice">공지·소식</a><a href="#reviews">고객후기</a></div>
@@ -823,7 +827,8 @@ const QUOTE_CONFIG={
 };
 function buildQuote(){
   const v=id=>(document.getElementById(id)?.value||'').trim();
-  return {co:v('fCo'),name:v('fName'),tel:v('fTel'),mail:v('fMail'),sol:v('fSol'),when:v('fWhen'),msg:v('fMsg')};
+  const o=id=>{const op=document.getElementById(id).selectedOptions[0];return (op._ko||op.textContent).trim()}; // 선택값은 항상 한국어 원문으로 발송
+  return {co:v('fCo'),name:v('fName'),tel:v('fTel'),mail:v('fMail'),sol:o('fSol'),when:o('fWhen'),msg:v('fMsg')};
 }
 function quoteText(q){
   return `회사명: ${q.co}\n담당자: ${q.name}\n연락처: ${q.tel}\n이메일: ${q.mail||'-'}\n관심 솔루션: ${q.sol}\n희망 도입 시기: ${q.when}\n\n[문의 내용]\n${q.msg||'-'}`;
@@ -833,18 +838,18 @@ function sendByMailto(q){
   location.href=`mailto:${QUOTE_CONFIG.toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(quoteText(q))}`;
 }
 function showDone(q){
-  document.getElementById('modalMsg').innerHTML=`<b style="color:var(--lime)">${esc(q.co)} ${esc(q.name)}님</b>, 신청이 접수되었습니다.<br>영업일 기준 24시간 이내에 담당 엔지니어가<br><b>${esc(q.tel)}</b>로 연락드리겠습니다.`;
+  document.getElementById('modalMsg').innerHTML=LANG==='en'?`<b style="color:var(--lime)">${esc(q.co)} / ${esc(q.name)}</b>, your request has been received.<br>A specialist engineer will contact you at<br><b>${esc(q.tel)}</b> within 24 business hours.`:`<b style="color:var(--lime)">${esc(q.co)} ${esc(q.name)}님</b>, 신청이 접수되었습니다.<br>영업일 기준 24시간 이내에 담당 엔지니어가<br><b>${esc(q.tel)}</b>로 연락드리겠습니다.`;
   document.getElementById('modal').classList.add('show');
 }
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 document.getElementById('btnQ').onclick=async()=>{
   const btn=document.getElementById('btnQ'),q=buildQuote();
   if(document.getElementById('fBot').checked)return; // 스팸봇 차단
-  if(!q.co||!q.name||!q.tel){toast('⚠️ 회사명·담당자명·연락처는 필수입니다');return}
-  if(q.mail&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q.mail)){toast('⚠️ 이메일 형식을 확인해 주세요');return}
-  if(!document.getElementById('fAgree').checked){toast('⚠️ 개인정보 수집·이용에 동의해 주세요');return}
+  if(!q.co||!q.name||!q.tel){toast(tr('⚠️ 회사명·담당자명·연락처는 필수입니다','⚠️ Company, contact name and phone are required'));return}
+  if(q.mail&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q.mail)){toast(tr('⚠️ 이메일 형식을 확인해 주세요','⚠️ Please check the email format'));return}
+  if(!document.getElementById('fAgree').checked){toast(tr('⚠️ 개인정보 수집·이용에 동의해 주세요','⚠️ Please agree to the collection and use of personal information'));return}
 
-  const label=btn.textContent;btn.disabled=true;btn.textContent='전송 중...';
+  const label=btn.textContent;btn.disabled=true;btn.textContent=tr('전송 중...','Sending...');
   try{
     const res=await fetch('https://api.web3forms.com/submit',{
       method:'POST',
@@ -865,13 +870,69 @@ document.getElementById('btnQ').onclick=async()=>{
     ['fCo','fName','fTel','fMail','fMsg'].forEach(id=>document.getElementById(id).value='');
   }catch(err){
     console.error('견적 전송 실패:',err);
-    const why=location.protocol==='file:'?'파일로 직접 열면 전송이 막힙니다(웹/서버에서 열어주세요)':(err&&err.message)||'알 수 없는 오류';
-    toast('⚠️ 전송 실패: '+why);
+    const why=location.protocol==='file:'?tr('파일로 직접 열면 전송이 막힙니다(웹/서버에서 열어주세요)','Sending is blocked when opened as a local file'):(err&&err.message)||tr('알 수 없는 오류','Unknown error');
+    toast(tr('⚠️ 전송 실패: ','⚠️ Failed to send: ')+why);
     setTimeout(()=>sendByMailto(q),1200);
   }finally{
     btn.disabled=false;btn.textContent=label;
   }
 };
+
+// ---------- language (KO / EN) ----------
+let LANG='ko';
+const tr=(ko,en)=>LANG==='en'?en:ko;
+const qa=sel=>[...document.querySelectorAll(sel)];
+// 단일 텍스트 요소: 한국어 원문 → 영어
+const T={'솔루션':'Solutions','기술력':'Technology','제품':'Products','레퍼런스':'References','ROI 분석':'ROI Analysis','고객지원':'Support','도입문의':'Contact',
+'무료 현장진단 신청':'Free Site Diagnosis','🔍 무료 샘플 테스트 신청':'🔍 Request a Free Sample Test','예상 절감액 계산하기':'Calculate Your Savings',
+'회사명 *':'Company *','담당자명 *':'Contact Name *','연락처 *':'Phone *','이메일':'Email','관심 솔루션':'Solution of Interest','희망 도입 시기':'Desired Timeline','문의 내용':'Message',
+'AI 외관검사':'AI Surface Inspection','정밀 치수측정':'Precision Dimension Measurement','OCR·바코드·라벨검증':'OCR · Barcode · Label Verification','로봇 가이던스':'Robot Guidance',
+'조립유무·실링검사':'Assembly & Sealing Inspection','3D 형상·높이측정':'3D Shape & Height Measurement','잘 모르겠음 (상담 희망)':'Not sure (consultation wanted)',
+'1개월 이내':'Within 1 month','3개월 이내':'Within 3 months','6개월 이내':'Within 6 months','내년 이후 / 검토 중':'Next year or later / Evaluating',
+'무료 현장진단 신청하기 →':'Request Free Site Diagnosis →','신청이 접수되었습니다':'Request Received','확인':'OK',
+'회사소개':'Company','OCR·라벨검증':'OCR · Label Verification','공지·소식':'News','고객후기':'Reviews','자주 묻는 질문':'FAQ','도입 문의':'Contact','도입 절차':'Process',
+'본 사이트의 시연 화면은 이해를 돕기 위한 시뮬레이션입니다.':'The demo screens on this site are simulations for illustration purposes.',
+'개인정보처리방침':'Privacy Policy','이용약관':'Terms of Use','이메일무단수집거부':'No Unauthorized Email Collection'};
+// 속성(placeholder/title/aria-label)
+const A={placeholder:{'(주)○○정밀':'○○ Precision Co., Ltd.','홍길동':'John Smith','010-0000-0000':'+82-10-0000-0000','검사 대상 제품, 라인 속도, 현재 불량 유형 등을 적어주시면 더 정확한 상담이 가능합니다.':'Tell us about the product to inspect, line speed and current defect types for a more accurate consultation.'},
+ title:{'상담 신청':'Request Consultation','맨 위로':'Back to top'},'aria-label':{'메뉴':'Menu'}};
+// 마크업이 섞인 영역: [selector, index, English HTML]
+const RICH=[
+ ['.topbar',0,'🎉 Selected as a 2026 Smart Factory Supply Provider &nbsp;·&nbsp; Up to <b>KRW 100M</b> in government subsidy for vision inspection &nbsp;·&nbsp; <b>Request a free site diagnosis →</b>'],
+ ['.badge',0,'<span class="dot"></span> Running live · 340+ lines nationwide'],
+ ['h1',0,'Defects stop,<br>production <span class="grad">speeds up</span>'],
+ ['.hero p.sub',0,'Vision-Automation is a smart-factory turnkey specialist that judges appearance, dimensions and assembly in <b>0.1 seconds</b> with <b>AI deep-learning machine vision</b>. From inspection systems to lighting, optics and control — solved in one go.'],
+ ['#contact .sec-head p',0,'Sample tests, quotes and government-subsidy consulting. A specialist engineer will contact you within <b style="color:var(--cyan)">24 business hours</b>.'],
+ ['.ct-info p',0,'Weekdays 09:00 – 18:00 · Urgent support on weekends/holidays'],
+ ['.ct-li',0,'<span class="ic">📍</span><div><b>HQ · Optics Lab</b>Techno Valley Bldg B, 7F, 123 Gwanggyo-ro, Yeongtong-gu, Suwon, Gyeonggi-do</div>'],
+ ['.ct-li',1,'<span class="ic">✉️</span><div><b>Email</b><a href="mailto:90m.official@gmail.com">90m.official@gmail.com</a></div>'],
+ ['.ct-li',2,'<span class="ic">🏭</span><div><b>Factory</b>45 Dongtansandan-ro, Hwaseong, Gyeonggi-do (equipment build &amp; FAT)</div>'],
+ ['.ct-li',3,'<span class="ic">🎁</span><div><b>Offer for new requests</b>Free sample test + optics report + case-study PDF</div>'],
+ ['#qform .agree span',0,'(Required) I agree to the collection and use of personal information for consultation. Items collected: company, name, contact; retention: 1 year after consultation ends.'],
+ ['#modalMsg',0,'A specialist engineer will contact you<br>within 24 business hours.'],
+ ['.ft-info',0,'Vision-Automation Co., Ltd. · CEO Kim Vision<br>Business Reg. No. 123-45-67890 · 123 Gwanggyo-ro, Yeongtong-gu, Suwon, Gyeonggi-do<br>Tel 010-3882-0769 · Email 90m.official@gmail.com<br>© 2026 Vision-Automation Co., Ltd. All rights reserved.']
+];
+const TITLE_KO=document.title,DESC_EL=document.querySelector('meta[name=description]'),DESC_KO=DESC_EL&&DESC_EL.content;
+function applyLang(l){
+  LANG=l;document.documentElement.lang=l;
+  RICH.forEach(([sel,i,en])=>{const el=qa(sel)[i];if(!el)return;if(el._koH===undefined)el._koH=el.innerHTML;el.innerHTML=l==='en'?en:el._koH});
+  qa('body *:not(script):not(style)').forEach(el=>{
+    if(el.children.length)return;
+    if(el._ko===undefined){const k=el.textContent.trim();if(!(k in T))return;el._ko=k}
+    el.textContent=l==='en'?T[el._ko]:el._ko;
+  });
+  Object.entries(A).forEach(([attr,map])=>qa('['+attr+']').forEach(el=>{
+    const k='_k_'+attr;
+    if(el[k]===undefined){const cur=el.getAttribute(attr);if(!(cur in map))return;el[k]=cur}
+    el.setAttribute(attr,l==='en'?map[el[k]]:el[k]);
+  }));
+  document.title=l==='en'?'Vision-Automation Co., Ltd. | Smart Machine Vision · AI Inspection Specialist':TITLE_KO;
+  if(DESC_EL)DESC_EL.content=l==='en'?'Vision-Automation provides turnkey AI deep-learning machine vision inspection, dimensional measurement and robot guidance for smart factories.':DESC_KO;
+  qa('#lang button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+}
+qa('#lang button').forEach(b=>b.onclick=()=>{try{localStorage.setItem('lang',b.dataset.l)}catch(e){}applyLang(b.dataset.l)});
+let savedLang=null;try{savedLang=localStorage.getItem('lang')}catch(e){}
+applyLang(savedLang||((navigator.language||'ko').toLowerCase().startsWith('ko')?'ko':'en'));
 </script>
 </body>
 </html>
