@@ -814,11 +814,11 @@ calcROI();
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3200)}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 // ★ 견적 메일 수신 설정 ★
-// FormSubmit(무료, 키 불필요)로 아래 주소에 견적 요청 메일이 자동 발송됩니다.
-// 최초 1회: 폼을 처음 제출하면 이 주소로 "Activate Form" 확인 메일이 오며, 버튼을 눌러 활성화해야 이후부터 정상 수신됩니다.
+// Web3Forms로 견적 요청이 90m.official@gmail.com 으로 발송됩니다. (Access Key는 공개되어도 안전한 값입니다)
 // 전송에 실패하면 mailto 방식(메일 프로그램 열기)으로 대체됩니다.
 const QUOTE_CONFIG={
-  toEmail:'90m.official@gmail.com',
+  web3formsKey:'848d7c63-2a37-4efa-8d7c-afd03acda237',
+  toEmail:'90m.official@gmail.com',   // mailto 대체용 수신 주소
   siteName:'비전오토메이션 홈페이지'
 };
 function buildQuote(){
@@ -846,21 +846,21 @@ document.getElementById('btnQ').onclick=async()=>{
 
   const label=btn.textContent;btn.disabled=true;btn.textContent='전송 중...';
   try{
-    const res=await fetch('https://formsubmit.co/ajax/'+encodeURIComponent(QUOTE_CONFIG.toEmail),{
+    const res=await fetch('https://api.web3forms.com/submit',{
       method:'POST',
       headers:{'Content-Type':'application/json',Accept:'application/json'},
       body:JSON.stringify({
-        _subject:`[견적문의] ${q.co} ${q.name}님 - ${q.sol}`,
-        _template:'table',
-        _captcha:'false',
-        '회사명':q.co,'담당자명':q.name,'연락처':q.tel,'이메일':q.mail||'-',
-        '관심 솔루션':q.sol,'희망 도입 시기':q.when,
-        '문의 내용':q.msg||'(문의 내용 없음)',
-        ...(q.mail?{_replyto:q.mail}:{})
+        access_key:QUOTE_CONFIG.web3formsKey,
+        subject:`[견적문의] ${q.co} ${q.name}님 - ${q.sol}`,
+        from_name:QUOTE_CONFIG.siteName,
+        name:q.name,
+        ...(q.mail?{email:q.mail}:{}),   // 입력 시 메일 답장(Reply-To)이 고객에게 바로 연결됩니다
+        '회사명':q.co,'연락처':q.tel,'관심 솔루션':q.sol,'희망 도입 시기':q.when,
+        message:q.msg||'(문의 내용 없음)'
       })
     });
     const data=await res.json();
-    if(!res.ok||String(data.success)!=='true')throw new Error(data.message||'send failed');
+    if(!res.ok||!data.success)throw new Error(data.message||'send failed');
     showDone(q);
     ['fCo','fName','fTel','fMail','fMsg'].forEach(id=>document.getElementById(id).value='');
   }catch(err){
