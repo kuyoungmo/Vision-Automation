@@ -864,8 +864,9 @@ document.getElementById('btnQ').onclick=async()=>{
     showDone(q);
     ['fCo','fName','fTel','fMail','fMsg'].forEach(id=>document.getElementById(id).value='');
   }catch(err){
-    console.error(err);
-    toast('⚠️ 전송에 실패했습니다. 메일 프로그램으로 대신 보내드릴게요');
+    console.error('견적 전송 실패:',err);
+    const why=location.protocol==='file:'?'파일로 직접 열면 전송이 막힙니다(웹/서버에서 열어주세요)':(err&&err.message)||'알 수 없는 오류';
+    toast('⚠️ 전송 실패: '+why);
     setTimeout(()=>sendByMailto(q),1200);
   }finally{
     btn.disabled=false;btn.textContent=label;
