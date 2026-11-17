@@ -1,70 +1,824 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>머신비전 및 공장 자동화 소프트웨어 솔루션 | Vision Automation</title>
-    <meta name="description" content="C#, .NET, OpenCV 기반 머신비전 검사 소프트웨어, 고속 장비 제어, 스마트팩토리 자동화 솔루션 개발 전문">
-    <style>
-        :root {
-            --primary: #0f172a;
-            --accent: #2563eb;
-            --bg-light: #f8fafc;
-            --text-main: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-        body { color: var(--text-main); line-height: 1.6; background-color: #fff; }
-        header { background: var(--primary); color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-weight: 700; font-size: 1.25rem; letter-spacing: -0.5px; }
-        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 6rem 2rem; text-align: center; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1.2rem; font-weight: 800; word-break: keep-all; }
-        .hero p { font-size: 1.15rem; color: #94a3b8; max-width: 700px; margin: 0 auto 2.5rem auto; word-break: keep-all; }
-        .btn { background: var(--accent); color: white; padding: 0.85rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; transition: background 0.2s; }
-        .btn:hover { background: #1d4ed8; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 5rem 2rem; }
-        section h2 { font-size: 2rem; margin-bottom: 3rem; text-align: center; color: var(--primary); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .card { background: var(--bg-light); padding: 2rem; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .card h3 { margin-bottom: 1rem; color: var(--primary); font-size: 1.2rem; }
-        .card p { font-size: 0.95rem; color: #64748b; }
-        footer { background: var(--primary); color: #94a3b8; text-align: center; padding: 3rem 2rem; font-size: 0.9rem; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비전오토메이션(주) | 스마트 머신비전 · AI 외관검사 전문기업</title>
+<meta name="description" content="비전오토메이션은 AI 딥러닝 기반 머신비전 외관검사, 치수측정, 로봇 가이던스 턴키 솔루션을 제공하는 스마트팩토리 전문기업입니다.">
+<style>
+:root{
+  --bg:#05080f; --bg2:#080e1b; --card:#0c1425; --card2:#101a30;
+  --line:rgba(148,163,184,.14); --line2:rgba(148,163,184,.22);
+  --text:#eaf0f9; --muted:#93a1b8; --dim:#5d6b86;
+  --cyan:#22d3ee; --blue:#3b82f6; --lime:#a3e635; --violet:#8b5cf6;
+  --red:#fb7185; --green:#34d399; --amber:#fbbf24;
+  --r:18px; --max:1200px;
+  --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(34,211,238,.3)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+section{padding:96px 0;position:relative}
+/* top banner */
+.topbar{background:linear-gradient(90deg,#0e7490,#1d4ed8,#6d28d9);font-size:13px;text-align:center;padding:9px 16px;color:#fff;letter-spacing:-.01em}
+.topbar b{color:#fef08a}
+/* header */
+header{position:sticky;top:0;z-index:100;background:rgba(5,8,15,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);transition:.3s}
+header.scrolled{box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:conic-gradient(from 200deg,#22d3ee,#3b82f6,#8b5cf6,#22d3ee);display:grid;place-items:center;position:relative;flex:none}
+.logo-mark::after{content:"";position:absolute;inset:3px;background:#05080f;border-radius:8px}
+.logo-mark svg{position:relative;z-index:1;width:20px;height:20px}
+.logo small{display:block;font-size:10.5px;font-weight:600;color:var(--cyan);letter-spacing:.14em}
+.logo span.t{line-height:1.15}
+.menu{display:flex;gap:4px;align-items:center}
+.menu a{padding:9px 14px;border-radius:10px;font-size:14.5px;font-weight:600;color:var(--muted);transition:.2s}
+.menu a:hover{color:#fff;background:rgba(148,163,184,.1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:13px;font-weight:700;font-size:15px;border:1px solid transparent;cursor:pointer;transition:.25s;letter-spacing:-.01em;white-space:nowrap}
+.btn-p{background:linear-gradient(135deg,#06b6d4,#3b82f6);color:#fff;box-shadow:0 8px 28px rgba(34,211,238,.28)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(34,211,238,.4)}
+.btn-g{background:rgba(148,163,184,.08);border-color:var(--line2);color:var(--text)}
+.btn-g:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-sm{padding:10px 18px;font-size:13.5px;border-radius:11px}
+.hamb{display:none;background:none;border:1px solid var(--line2);border-radius:10px;width:44px;height:44px;cursor:pointer;color:#fff;font-size:20px}
+/* hero */
+.hero{padding:72px 0 60px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-bg::before{content:"";position:absolute;width:700px;height:700px;left:-200px;top:-250px;background:radial-gradient(circle,rgba(34,211,238,.14),transparent 65%)}
+.hero-bg::after{content:"";position:absolute;width:800px;height:800px;right:-260px;top:-100px;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 65%)}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(148,163,184,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.06) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,#000 30%,transparent 75%)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;position:relative}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:100px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:22px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+h1{font-size:clamp(34px,5vw,56px);line-height:1.14;font-weight:800;letter-spacing:-.03em;margin-bottom:20px}
+h1 .grad{background:linear-gradient(100deg,#22d3ee,#818cf8 55%,#e879f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{color:var(--muted);font-size:17px;letter-spacing:-.01em;margin-bottom:30px;max-width:560px}
+.hero p.sub b{color:var(--text)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px}
+.hstat{background:rgba(148,163,184,.06);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center}
+.hstat b{display:block;font-size:21px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.hstat b em{font-style:normal;color:var(--cyan);font-size:15px}
+.hstat span{font-size:11.5px;color:var(--dim);font-weight:600}
+/* monitor */
+.monitor{background:linear-gradient(180deg,#0d1628,#080d19);border:1px solid var(--line2);border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(34,211,238,.06),0 0 90px rgba(59,130,246,.12)}
+.mon-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);background:rgba(148,163,184,.04)}
+.mon-head .t{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
+.led{width:9px;height:9px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:blink 1.2s infinite}
+.mon-head .cam{font-size:11.5px;color:var(--dim);font-weight:600;background:rgba(148,163,184,.1);padding:4px 11px;border-radius:20px}
+#cv{display:block;width:100%;height:300px;background:#04070d}
+.mon-foot{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.mf{padding:13px 8px;text-align:center;border-right:1px solid var(--line)}
+.mf:last-child{border-right:0}
+.mf b{display:block;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.mf span{font-size:11px;color:var(--dim);font-weight:600}
+.mf .ok{color:var(--green)} .mf .ng{color:var(--red)} .mf .cy{color:var(--cyan)} .mf .am{color:var(--amber)}
+.mon-ctrl{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);align-items:center;flex-wrap:wrap;background:rgba(148,163,184,.03)}
+.mon-ctrl label{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
+.mon-ctrl input[type=range]{width:110px;accent-color:var(--cyan)}
+.tgl{margin-left:auto;display:flex;gap:8px}
+.chip-btn{background:rgba(148,163,184,.1);border:1px solid var(--line2);color:var(--text);font-size:12.5px;font-weight:700;padding:7px 15px;border-radius:9px;cursor:pointer;transition:.2s;font-family:var(--font)}
+.chip-btn.on{background:rgba(34,211,238,.15);border-color:var(--cyan);color:var(--cyan)}
+/* clients */
+.clients{padding:34px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(148,163,184,.02);overflow:hidden}
+.clients p{font-size:12.5px;color:var(--dim);font-weight:700;letter-spacing:.1em;text-align:center;margin-bottom:18px}
+.marquee{display:flex;gap:14px;width:max-content;animation:mq 30s linear infinite}
+.marquee span{font-size:15px;font-weight:800;color:#3d4a63;background:rgba(148,163,184,.06);border:1px solid var(--line);padding:11px 26px;border-radius:12px;white-space:nowrap;letter-spacing:-.01em}
+.marquee span i{font-style:normal;color:#5b6b88;font-weight:600;font-size:11px;display:block;letter-spacing:.08em}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* section heads */
+.sec-head{max-width:720px;margin-bottom:54px}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.eyebrow{display:inline-block;font-size:13px;font-weight:800;color:var(--cyan);letter-spacing:.12em;margin-bottom:12px}
+h2{font-size:clamp(27px,3.6vw,40px);font-weight:800;letter-spacing:-.025em;line-height:1.25;margin-bottom:14px}
+.sec-head p{color:var(--muted);font-size:16px}
+/* solutions */
+.sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.sol{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;transition:.3s;position:relative;overflow:hidden}
+.sol::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--violet));opacity:0;transition:.3s}
+.sol:hover{transform:translateY(-6px);border-color:rgba(34,211,238,.4);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.sol:hover::before{opacity:1}
+.sol-ic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;margin-bottom:18px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25)}
+.sol-ic svg{width:26px;height:26px}
+.sol h3{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:9px}
+.sol p{font-size:14px;color:var(--muted);margin-bottom:16px}
+.sol ul{list-style:none;margin-bottom:18px}
+.sol li{font-size:13px;color:var(--muted);padding:5px 0 5px 22px;position:relative}
+.sol li::before{content:"✓";position:absolute;left:0;color:var(--cyan);font-weight:800}
+.sol a.more{font-size:13.5px;font-weight:700;color:var(--cyan)}
+/* tech */
+.tech{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.spec{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.spec:last-child{border:0}
+.spec-n{font-size:13px;font-weight:800;color:var(--cyan);background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.spec h4{font-size:16px;font-weight:800;margin-bottom:5px}
+.spec p{font-size:13.5px;color:var(--muted)}
+.pipeline{background:#04070d;border:1px solid var(--line2);border-radius:20px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.pipeline h4{font-size:14px;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:9px}
+.pipe-step{display:flex;gap:14px;align-items:center;background:rgba(148,163,184,.05);border:1px solid var(--line);border-radius:13px;padding:13px 16px;margin-bottom:10px;font-size:13.5px;font-weight:600}
+.pipe-step .pn{margin-left:auto;font-size:11.5px;color:var(--lime);font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pipe-arrow{text-align:center;color:var(--cyan);font-weight:800;margin:2px 0;font-size:15px}
+.pipe-bar{height:8px;border-radius:10px;background:rgba(148,163,184,.12);margin-top:18px;overflow:hidden}
+.pipe-bar i{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--cyan),var(--lime));transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+/* products */
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:.3s;display:flex;flex-direction:column}
+.prod:hover{transform:translateY(-6px);border-color:rgba(163,230,53,.4);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.prod-vis{height:190px;display:grid;place-items:center;background:radial-gradient(circle at 50% 120%,rgba(34,211,238,.18),transparent 65%),linear-gradient(180deg,#0e1930,#070c17);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.prod-vis .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:800;background:rgba(163,230,53,.14);color:var(--lime);border:1px solid rgba(163,230,53,.4);padding:4px 11px;border-radius:20px}
+.prod-body{padding:24px 24px 26px;display:flex;flex-direction:column;flex:1}
+.prod-body h3{font-size:17.5px;font-weight:800;margin-bottom:4px}
+.prod-body .code{font-size:12px;color:var(--cyan);font-weight:700;letter-spacing:.06em;margin-bottom:10px}
+.prod-body p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.prod-body table{width:100%;font-size:12.5px;border-collapse:collapse;margin-bottom:18px}
+.prod-body td{padding:7px 0;border-top:1px dashed var(--line);color:var(--muted)}
+.prod-body td:last-child{text-align:right;color:var(--text);font-weight:700}
+.prod-body .btn{margin-top:auto;justify-content:center}
+/* cases */
+.cases{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+.tab{background:rgba(148,163,184,.07);border:1px solid var(--line2);color:var(--muted);font-size:14px;font-weight:700;padding:10px 20px;border-radius:12px;cursor:pointer;transition:.2s;font-family:var(--font)}
+.tab.on{background:linear-gradient(135deg,#06b6d4,#3b82f6);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(34,211,238,.3)}
+.case-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.case-main{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:36px;position:relative;overflow:hidden}
+.case-main::after{content:"";position:absolute;width:400px;height:400px;right:-150px;top:-150px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 65%);pointer-events:none}
+.case-main .co{font-size:13px;font-weight:800;color:var(--lime);letter-spacing:.06em;margin-bottom:10px}
+.case-main h3{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:12px;line-height:1.35}
+.case-main>p{color:var(--muted);font-size:14.5px;margin-bottom:24px;max-width:520px}
+.case-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.cn{background:rgba(148,163,184,.05);border:1px solid var(--line);border-radius:13px;padding:15px 12px;text-align:center}
+.cn b{display:block;font-size:23px;font-weight:800;color:var(--cyan);font-variant-numeric:tabular-nums}
+.cn span{font-size:11.5px;color:var(--dim);font-weight:600}
+.case-side{display:grid;gap:20px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.mini .co{font-size:12px;font-weight:800;color:var(--cyan);margin-bottom:6px}
+.mini h4{font-size:16px;font-weight:800;margin-bottom:8px}
+.mini p{font-size:13px;color:var(--muted);margin-bottom:12px}
+.mini .res{display:flex;gap:8px;flex-wrap:wrap}
+.mini .res span{font-size:12px;font-weight:700;background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.3);padding:4px 12px;border-radius:20px}
+/* process */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:st}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 20px;text-align:center;position:relative;transition:.3s}
+.step:hover{border-color:rgba(34,211,238,.4)}
+.step .n{width:40px;height:40px;margin:0 auto 14px;border-radius:12px;background:linear-gradient(135deg,#06b6d4,#3b82f6);display:grid;place-items:center;font-weight:800;font-size:17px}
+.step h4{font-size:15px;font-weight:800;margin-bottom:7px}
+.step p{font-size:12.5px;color:var(--muted)}
+.step .d{font-size:11px;color:var(--cyan);font-weight:700;margin-top:9px;display:block}
+/* roi */
+.roi{background:linear-gradient(180deg,#070d1a,#05080f);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.roi-card{background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:34px}
+.roi-card h3{font-size:19px;font-weight:800;margin-bottom:6px}
+.roi-card .sub{font-size:13.5px;color:var(--muted);margin-bottom:26px}
+.f-row{margin-bottom:22px}
+.f-row label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:9px}
+.f-row label output{color:var(--cyan);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--cyan);height:28px;cursor:pointer}
+.roi-res{background:linear-gradient(160deg,#0b1a2e,#0a0f22);border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:34px;position:relative;overflow:hidden}
+.roi-res::before{content:"";position:absolute;width:340px;height:340px;right:-120px;top:-120px;background:radial-gradient(circle,rgba(34,211,238,.18),transparent 65%)}
+.roi-res h3{font-size:15px;color:var(--muted);font-weight:700;margin-bottom:16px}
+.roi-big{font-size:clamp(38px,5vw,54px);font-weight:800;letter-spacing:-.03em;color:var(--lime);font-variant-numeric:tabular-nums;line-height:1.1}
+.roi-big small{font-size:16px;color:var(--muted);font-weight:600}
+.roi-rows{margin-top:24px;display:grid;gap:12px}
+.rr{display:flex;justify-content:space-between;font-size:14px;padding:13px 16px;background:rgba(148,163,184,.05);border:1px solid var(--line);border-radius:12px}
+.rr b{color:#fff;font-variant-numeric:tabular-nums}
+.rr b.plus{color:var(--lime)}
+/* reviews */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column}
+.stars{color:var(--amber);font-size:15px;letter-spacing:3px;margin-bottom:14px}
+.rev p{font-size:14px;color:#c6d0e2;flex:1;margin-bottom:20px}
+.rev p::before{content:"“";color:var(--cyan);font-size:22px;font-weight:800}
+.who{display:flex;gap:13px;align-items:center;border-top:1px solid var(--line);padding-top:18px}
+.ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
+.who b{font-size:14px;display:block}
+.who span{font-size:12px;color:var(--dim)}
+.cert{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:40px}
+.cert span{font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line2);padding:9px 20px;border-radius:30px;background:rgba(148,163,184,.04)}
+.cert span b{color:var(--lime)}
+/* notice */
+.notice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.nc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;transition:.25s;cursor:pointer}
+.nc:hover{border-color:rgba(34,211,238,.4);transform:translateY(-4px)}
+.nc .d{font-size:12px;color:var(--dim);font-weight:600;margin-bottom:10px}
+.nc .k{font-size:11px;font-weight:800;padding:4px 11px;border-radius:20px;margin-right:8px}
+.k-n{background:rgba(34,211,238,.12);color:var(--cyan)} .k-e{background:rgba(163,230,53,.12);color:var(--lime)} .k-t{background:rgba(139,92,246,.14);color:#c4b5fd}
+.nc h4{font-size:15.5px;font-weight:700;margin-top:10px;line-height:1.5}
+/* faq */
+.faq-wrap{max-width:800px;margin:0 auto}
+.faq{border:1px solid var(--line);border-radius:15px;margin-bottom:12px;background:var(--card);overflow:hidden}
+.faq button{width:100%;background:none;border:0;color:var(--text);font-family:var(--font);font-size:15.5px;font-weight:700;text-align:left;padding:20px 24px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.faq button i{font-style:normal;color:var(--cyan);font-size:20px;transition:.3s;flex:none}
+.faq.open button i{transform:rotate(45deg)}
+.faq .a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq .a div{padding:0 24px 22px;color:var(--muted);font-size:14px}
+/* contact */
+.contact{background:var(--bg2);border-top:1px solid var(--line)}
+.ct-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:24px}
+.ct-info{background:linear-gradient(165deg,#0c1a30,#080d1c);border:1px solid rgba(34,211,238,.25);border-radius:20px;padding:38px 34px;position:relative;overflow:hidden}
+.ct-info::before{content:"";position:absolute;width:300px;height:300px;left:-100px;bottom:-120px;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 65%)}
+.ct-info h3{font-size:24px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.ct-info>p{font-size:14px;color:var(--muted);margin-bottom:28px}
+.ct-li{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px;font-size:14px;position:relative}
+.ct-li .ic{width:38px;height:38px;border-radius:11px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);display:grid;place-items:center;flex:none;font-size:17px}
+.ct-li b{display:block;font-size:13px;color:var(--dim);font-weight:700;margin-bottom:2px}
+.ct-li a:hover{color:var(--cyan)}
+form.qu{background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:38px 34px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted)}
+.fg input,.fg select,.fg textarea{width:100%;background:#070d1a;border:1px solid var(--line2);border-radius:12px;color:#fff;font-family:var(--font);font-size:14.5px;padding:13px 16px;outline:none;transition:.2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.fg textarea{resize:vertical;min-height:110px}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--dim);margin:6px 0 20px}
+.agree input{margin-top:3px;accent-color:var(--cyan)}
+/* footer */
+footer{border-top:1px solid var(--line);padding:56px 0 30px;background:#04070d}
+.ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px}
+.ft-grid h5{font-size:13px;font-weight:800;color:var(--dim);letter-spacing:.08em;margin-bottom:16px}
+.ft-grid a{display:block;font-size:14px;color:var(--muted);padding:5px 0}
+.ft-grid a:hover{color:var(--cyan)}
+.ft-info{font-size:12.5px;color:var(--dim);line-height:1.9}
+.ft-bot{border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dim)}
+/* floating */
+.float-btns{position:fixed;right:22px;bottom:22px;z-index:90;display:flex;flex-direction:column;gap:10px}
+.fbtn{width:54px;height:54px;border-radius:16px;border:1px solid var(--line2);background:rgba(12,20,37,.92);backdrop-filter:blur(10px);color:#fff;font-size:21px;cursor:pointer;transition:.25s;display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.fbtn:hover{border-color:var(--cyan);transform:translateY(-3px)}
+.fbtn.talk{background:linear-gradient(135deg,#06b6d4,#3b82f6);border:0}
+/* toast */
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(90px);background:#0c1a2e;border:1px solid var(--cyan);color:#fff;font-size:14.5px;font-weight:700;padding:15px 28px;border-radius:14px;z-index:200;transition:.4s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 16px 50px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+/* modal */
+.modal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(2,4,10,.8);backdrop-filter:blur(6px)}
+.modal-box{position:relative;background:linear-gradient(180deg,#0e182e,#080d1a);border:1px solid rgba(34,211,238,.35);border-radius:22px;padding:44px 40px;max-width:460px;width:100%;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.modal-box .ok-ic{width:70px;height:70px;margin:0 auto 20px;border-radius:50%;background:rgba(52,211,153,.12);border:2px solid var(--green);display:grid;place-items:center;font-size:32px;color:var(--green)}
+.modal-box h3{font-size:22px;font-weight:800;margin-bottom:10px}
+.modal-box p{font-size:14px;color:var(--muted);margin-bottom:26px}
+/* reveal */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .7s ease,transform .7s ease}
+.rv.vis{opacity:1;transform:none}
+/* responsive */
+@media(max-width:1020px){
+  .hero-grid,.tech-grid,.case-grid,.roi-grid,.ct-grid{grid-template-columns:1fr}
+  .sol-grid,.prod-grid,.rev-grid,.notice-grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .menu{display:none;position:absolute;top:70px;left:0;right:0;background:#080e1c;border-bottom:1px solid var(--line2);flex-direction:column;padding:14px 20px 20px;align-items:stretch}
+  .menu.show{display:flex}
+  .menu a{padding:13px 10px}
+  .hamb{display:block}
+  .nav-cta{display:none}
+  .ft-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  section{padding:68px 0}
+  .sol-grid,.prod-grid,.rev-grid,.notice-grid,.steps{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .mon-foot{grid-template-columns:repeat(2,1fr)}
+  .mf:nth-child(2){border-right:0}
+  .mf{border-top:1px solid var(--line)}
+  .mf:nth-child(1),.mf:nth-child(2){border-top:0}
+  .f2{grid-template-columns:1fr}
+  .case-nums{grid-template-columns:1fr 1fr}
+  form.qu,.ct-info,.roi-card,.roi-res{padding:26px 22px}
+  .float-btns{right:14px;bottom:14px}
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">VisionAutomation.io</div>
-    </header>
+<div class="topbar">🎉 2026 스마트공장 보급·확산 지원사업 공급기업 선정 &nbsp;·&nbsp; 정부지원금 <b>최대 1억원</b>으로 비전검사 도입 가능 &nbsp;·&nbsp; <b>무료 현장진단 신청 →</b></div>
 
-    <section class="hero">
-        <h1>하드웨어와 완벽히 동기화되는<br>고성능 머신비전 & 자동화 소프트웨어</h1>
-        <p>C#, .NET, OpenCV 및 AI 기반 비전 검사 시스템부터 복잡한 장비 통신 프로토콜 연동까지, 제조 현장의 한계를 해결합니다.</p>
-        <a href="mailto:your-email@domain.com" class="btn">기술 상담 및 의뢰 문의</a>
-    </section>
+<header id="hd">
+  <div class="wrap nav">
+    <a class="logo" href="#top">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3" stroke="#a3e635"/></svg></span>
+      <span class="t">비전오토메이션<small>VISION-AUTOMATION</small></span>
+    </a>
+    <nav class="menu" id="menu">
+      <a href="#solutions">솔루션</a>
+      <a href="#tech">기술력</a>
+      <a href="#products">제품</a>
+      <a href="#cases">레퍼런스</a>
+      <a href="#roi">ROI 분석</a>
+      <a href="#faq">고객지원</a>
+      <a href="#contact" style="color:var(--cyan)">도입문의</a>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a href="#contact" class="btn btn-p btn-sm nav-cta">무료 현장진단 신청</a>
+      <button class="hamb" id="hamb" aria-label="메뉴">☰</button>
+    </div>
+  </div>
+</header>
 
-    <main class="container">
-        <section>
-            <h2>Core Expertise & Tech Stack</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>Machine Vision & AI</h3>
-                    <p>OpenCvSharp, OpenCV C++ 네이티브 래퍼, ONNX Runtime / OpenVINO 기반 딥러닝 이상 탐지 및 고속 결함 검출 알고리즘 구현</p>
-                </div>
-                <div class="card">
-                    <h3>Desktop Architecture</h3>
-                    <p>C# .NET 8, WPF, WinForms를 활용한 멀티 카메라(Basler, Hikrobot 등) 실시간 스트리밍 및 안정적인 비동기 UI 구조 설계</p>
-                </div>
-                <div class="card">
-                    <h3>Hardware & PLC Control</h3>
-                    <p>LS, OMRON PLC 제어, DIO 보드 및 산업용 장비 통신 프로토콜 연동, 하드웨어 트리거 정밀 동기화 트러블슈팅</p>
-                </div>
-            </div>
-        </section>
-    </main>
+<!-- HERO -->
+<div class="hero" id="top" style="position:relative">
+  <div class="hero-bg"><div class="grid-bg"></div></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge"><span class="dot"></span> 실시간 가동 중 · 전국 340+ 라인 적용</span>
+      <h1>불량은 멈추고,<br>생산은 <span class="grad">더 빨라진다</span></h1>
+      <p class="sub">비전오토메이션은 <b>AI 딥러닝 머신비전</b>으로 외관검사·치수측정·조립유무를 <b>0.1초 만에</b> 판정하는 스마트팩토리 턴키 전문기업입니다. 검사기부터 조명·광학·제어까지, 한 번에 해결하세요.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-p">🔍 무료 샘플 테스트 신청</a>
+        <a href="#roi" class="btn btn-g">예상 절감액 계산하기</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><b><span class="cnt" data-to="340">0</span><em>+</em></b><span>구축 레퍼런스</span></div>
+        <div class="hstat"><b><span class="cnt" data-to="99.98" data-dec="2">0</span><em>%</em></b><span>평균 판정 정확도</span></div>
+        <div class="hstat"><b><span class="cnt" data-to="0.1" data-dec="1">0</span><em>sec</em></b><span>이미지당 판정속도</span></div>
+        <div class="hstat"><b><span class="cnt" data-to="14">0</span><em>년</em></b><span>머신비전 경력</span></div>
+      </div>
+    </div>
+    <div class="monitor rv vis">
+      <div class="mon-head">
+        <div class="t"><span class="led"></span> LINE-A · 외관검사 실시간 모니터링</div>
+        <span class="cam">CAM 04 · 12MP</span>
+      </div>
+      <canvas id="cv" width="640" height="300"></canvas>
+      <div class="mon-foot">
+        <div class="mf"><b class="ok" id="mOk">0</b><span>OK 누적</span></div>
+        <div class="mf"><b class="ng" id="mNg">0</b><span>NG 누적</span></div>
+        <div class="mf"><b class="am" id="mYield">100.0%</b><span>수율 (Yield)</span></div>
+        <div class="mf"><b class="cy" id="mTakt">0</b><span>UPH (시간당)</span></div>
+      </div>
+      <div class="mon-ctrl">
+        <label>컨베이어 속도 <input type="range" id="spd" min="1" max="10" value="5"></label>
+        <label>민감도 <input type="range" id="sen" min="1" max="10" value="6"></label>
+        <div class="tgl">
+          <button class="chip-btn on" id="btnRun">⏸ 일시정지</button>
+          <button class="chip-btn" id="btnReset">↺ 리셋</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 Vision Automation Tech. All rights reserved.</p>
-    </footer>
+<!-- CLIENTS -->
+<div class="clients">
+  <p>TRUSTED BY LEADING MANUFACTURERS</p>
+  <div class="marquee" id="mq">
+    <span><i>2차전지</i>에코셀텍</span><span><i>반도체</i>한빛세미텍</span><span><i>자동차</i>코리아모터스</span><span><i>디스플레이</i>미래디스플레이</span><span><i>식품·제약</i>그린바이오</span><span><i>물류</i>로지스퀘어</span><span><i>전자부품</i>대성일렉트로닉스</span><span><i>화장품</i>뷰티랩코리아</span>
+  </div>
+</div>
 
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">● VISION SOLUTIONS</span>
+      <h2>검사 공정에 딱 맞는<br>6대 비전 솔루션</h2>
+      <p>단순 룰베이스부터 최신 딥러닝까지. 현장 조건에 맞춰 광학·조명·S/W를 통째로 설계하는 턴키 방식입니다.</p>
+    </div>
+    <div class="sol-grid">
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>AI 외관검사</h3><p>스크래치·찍힘·이물·변색 등 미미한 결함까지 딥러닝이 판정. 육안검사 대비 30배 빠른 전수검사.</p><ul><li>결함 검출률 99.9%</li><li>과검출 0.3% 이하</li><li>신제품 1일 내 학습</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="1.8"><path d="M3 17L17 3l4 4L7 21l-4-4z"/><path d="M8 12l2 2 3-3 3 3 2-2"/></svg></div><h3>정밀 치수측정</h3><p>비접촉 광학 측정으로 ±5㎛ 정밀도. 도면 공차 자동 판정과 측정 리포트 자동 발행.</p><ul><li>±5㎛ 측정 정밀도</li><li>다품종 도면 자동인식</li><li>SPC 통계 연동</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8"><path d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg></div><h3>OCR · 바코드 · 라벨검증</h3><p>인쇄 상태가 불량해도 읽는 딥러닝 OCR. 날짜·로트·바코드 오인쇄 유출 원천 차단.</p><ul><li>난독 문자 인식률 99.7%</li><li>1D/2D·QR 전 규격</li><li>전수 이력 저장 5년</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8 16l6-6M6 15V9h6"/></svg></div><h3>로봇 가이던스 (Bin Picking)</h3><p>3D 비전으로 뒤엉킨 부품의 위치·자세를 인식해 로봇이 집도록 가이드. 티칭 불필요.</p><ul><li>3D 위치 인식 ±0.2mm</li><li>6축·협동로봇 연동</li><li>다품종 혼류 대응</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><h3>조립유무 · 실링검사</h3><p>나사 빠짐·커넥터 미체결·실링 불량을 라인 속도 그대로 전수 확인. 클레임 제로화.</p><ul><li>120PPM 고속 대응</li><li>NG 자동 배출 연동</li><li>이미지 증거 보관</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+      <div class="sol rv"><div class="sol-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="1.8"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/></svg></div><h3>3D 형상 · 높이측정</h3><p>레이저 프로파일·스테레오 방식으로 단차·휨·도포량을 3차원으로 정밀 측정.</p><ul><li>높이 분해능 1㎛</li><li>접착제 도포량 검사</li><li>휨·뒤틀림 판정</li></ul><a class="more" href="#contact">도입 상담하기 →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="tech" id="tech">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">● CORE TECHNOLOGY</span>
+      <h2>왜 비전오토메이션인가?</h2>
+      <p>14년 현장 노하우 위에 자체 AI 엔진을 얹었습니다. 남들이 "안 된다"는 검사, 저희는 해냅니다.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="rv">
+        <div class="spec"><span class="spec-n">01</span><div><h4>자체 딥러닝 엔진 VA-DeepEye®</h4><p>불량 이미지 50장만으로 학습되는 Few-shot 기술. 신제품·모델 체인지에도 하루 만에 대응합니다.</p></div></div>
+        <div class="spec"><span class="spec-n">02</span><div><h4>엣지 AI · 0.1초 초고속 판정</h4><p>NVIDIA 엣지 GPU 기반 온디바이스 추론. 네트워크 지연 없이 라인 속도 그대로 전수검사합니다.</p></div></div>
+        <div class="spec"><span class="spec-n">03</span><div><h4>조명·광학 자체 설계 연구소</h4><p>검사 성패의 70%는 광학. 200종 조명 라이브러리와 광학 시뮬레이션으로 촬영 조건을 먼저 증명합니다.</p></div></div>
+        <div class="spec"><span class="spec-n">04</span><div><h4>PLC · MES · 로봇 완벽 연동</h4><p>미쓰비시·LS·지멘스 PLC, 주요 MES와 표준 연동. NG 배출·리포트·이력관리까지 자동화합니다.</p></div></div>
+      </div>
+      <div class="pipeline rv">
+        <h4>⚙️ VA-DeepEye® 검사 파이프라인 <span style="margin-left:auto;font-size:11.5px;color:var(--lime)">● LIVE</span></h4>
+        <div class="pipe-step">📷 이미지 취득 (12MP Area Scan)<span class="pn">8ms</span></div>
+        <div class="pipe-arrow">▼</div>
+        <div class="pipe-step">✨ 전처리 · 노이즈 제거<span class="pn">12ms</span></div>
+        <div class="pipe-arrow">▼</div>
+        <div class="pipe-step">🧠 딥러닝 추론 (VA-DeepEye®)<span class="pn">61ms</span></div>
+        <div class="pipe-arrow">▼</div>
+        <div class="pipe-step">✅ 판정 · PLC 출력 · 저장<span class="pn">9ms</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:16px;font-weight:700"><span>총 판정 시간</span><span style="color:var(--lime)">90ms / 1장</span></div>
+        <div class="pipe-bar"><i id="pipeBar"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="eyebrow">● PRODUCTS</span>
+      <h2>검증된 자사 하드웨어 라인업</h2>
+      <p>카메라부터 컨트롤러·조명까지, 호환성 걱정 없는 원스톱 패키지</p>
+    </div>
+    <div class="prod-grid">
+      <div class="prod rv">
+        <div class="prod-vis"><span class="tag">BEST SELLER</span>
+          <svg width="120" height="120" viewBox="0 0 120 120"><rect x="30" y="35" width="60" height="50" rx="10" fill="#101c33" stroke="#22d3ee" stroke-width="2"/><circle cx="60" cy="60" r="16" fill="#05080f" stroke="#22d3ee" stroke-width="2"/><circle cx="60" cy="60" r="8" fill="#0e7490"/><circle cx="63" cy="57" r="2.5" fill="#a5f3fc"/><rect x="52" y="22" width="16" height="13" rx="3" fill="#101c33" stroke="#22d3ee" stroke-width="1.5"/><line x1="38" y1="95" x2="38" y2="105" stroke="#22d3ee" stroke-width="2"/><line x1="82" y1="95" x2="82" y2="105" stroke="#22d3ee" stroke-width="2"/><circle cx="60" cy="60" r="24" fill="none" stroke="#22d3ee" stroke-width="1" opacity=".4" stroke-dasharray="4 4"/></svg>
+        </div>
+        <div class="prod-body"><h3>스마트카메라 X1</h3><div class="code">VA-SCAM X1 · 12MP</div><p>AI 연산 내장 올인원 카메라. 별도 PC 없이 단독 검사 가능.</p>
+          <table><tr><td>해상도</td><td>12MP (4096×3000)</td></tr><tr><td>판정속도</td><td>90ms / 이미지</td></tr><tr><td>인터페이스</td><td>GigE · I/O · RS232</td></tr></table>
+          <a href="#contact" class="btn btn-g btn-sm">견적 문의 →</a></div>
+      </div>
+      <div class="prod rv">
+        <div class="prod-vis"><span class="tag" style="background:rgba(139,92,246,.14);color:#c4b5fd;border-color:rgba(139,92,246,.4)">NEW</span>
+          <svg width="120" height="120" viewBox="0 0 120 120"><rect x="22" y="40" width="76" height="44" rx="8" fill="#101c33" stroke="#8b5cf6" stroke-width="2"/><rect x="30" y="50" width="24" height="24" rx="4" fill="#05080f" stroke="#8b5cf6" stroke-width="1.5"/><circle cx="88" cy="58" r="3" fill="#a3e635"/><circle cx="88" cy="70" r="3" fill="#22d3ee"/><line x1="60" y1="50" x2="78" y2="50" stroke="#3d4a63" stroke-width="2"/><line x1="60" y1="58" x2="78" y2="58" stroke="#3d4a63" stroke-width="2"/><line x1="60" y1="66" x2="78" y2="66" stroke="#3d4a63" stroke-width="2"/><path d="M40 30l5 10M80 30l-5 10" stroke="#8b5cf6" stroke-width="2"/></svg>
+        </div>
+        <div class="prod-body"><h3>엣지 AI 컨트롤러</h3><div class="code">VA-EDGE A200 · 4CH</div><p>카메라 4대 동시 제어. 대용량 이미지 저장 + MES 연동 표준 탑재.</p>
+          <table><tr><td>채널</td><td>최대 4CH 동시</td></tr><tr><td>연산</td><td>275 TOPS GPU</td></tr><tr><td>저장</td><td>4TB · 5년 보관</td></tr></table>
+          <a href="#contact" class="btn btn-g btn-sm">견적 문의 →</a></div>
+      </div>
+      <div class="prod rv">
+        <div class="prod-vis"><span class="tag">OPTICS LAB</span>
+          <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="58" r="30" fill="none" stroke="#fbbf24" stroke-width="6"/><circle cx="60" cy="58" r="30" fill="none" stroke="#fef08a" stroke-width="2"/><rect x="45" y="88" width="30" height="10" rx="3" fill="#101c33" stroke="#fbbf24" stroke-width="1.5"/><line x1="60" y1="28" x2="60" y2="14" stroke="#fbbf24" stroke-width="2"/><line x1="35" y1="36" x2="27" y2="26" stroke="#fbbf24" stroke-width="2"/><line x1="85" y1="36" x2="93" y2="26" stroke="#fbbf24" stroke-width="2"/></svg>
+        </div>
+        <div class="prod-body"><h3>검사조명 시리즈</h3><div class="code">VA-LIGHT · 200종</div><p>돔·백라이트·라인스캔 조명. 무상 광학 테스트로 최적 조건 선정.</p>
+          <table><tr><td>종류</td><td>돔 / 바 / 링 / 동축</td></tr><tr><td>수명</td><td>50,000시간</td></tr><tr><td>지원</td><td>무상 조명 테스트</td></tr></table>
+          <a href="#contact" class="btn btn-g btn-sm">견적 문의 →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="cases" id="cases">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">● REFERENCES</span>
+      <h2>현장에서 증명한 성과</h2>
+      <p>업종별 대표 레퍼런스. 상세 구축 사례집(PDF)은 상담 시 제공해 드립니다.</p>
+    </div>
+    <div class="tabs rv" id="tabs">
+      <button class="tab on" data-c="0">🔋 2차전지</button>
+      <button class="tab" data-c="1">🚗 자동차부품</button>
+      <button class="tab" data-c="2">💊 식품·제약</button>
+      <button class="tab" data-c="3">📦 물류·이커머스</button>
+    </div>
+    <div class="case-grid rv">
+      <div class="case-main" id="caseMain"></div>
+      <div class="case-side" id="caseSide"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="eyebrow">● PROCESS</span>
+      <h2>상담부터 가동까지, 평균 6주</h2>
+      <p>복잡한 건 저희가 다 합니다. 고객사는 샘플만 보내주세요.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="n">1</div><h4>현장진단·상담</h4><p>검사 포인트·택타임·불량 유형 파악</p><span class="d">1주차 · 무료</span></div>
+      <div class="step rv"><div class="n">2</div><h4>샘플 테스트</h4><p>무상 촬영·판정 테스트 후 결과 리포트 제공</p><span class="d">2주차 · 무료</span></div>
+      <div class="step rv"><div class="n">3</div><h4>설계·제작</h4><p>기구·광학·S/W 설계 및 공장 제작</p><span class="d">3~4주차</span></div>
+      <div class="step rv"><div class="n">4</div><h4>설치·시운전</h4><p>라인 설치 후 양산 조건 시운전·튜닝</p><span class="d">5주차</span></div>
+      <div class="step rv"><div class="n">5</div><h4>양산·유지보수</h4><p>정식 가동, 원격 모니터링·무상 A/S 1년</p><span class="d">6주차~</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<section class="roi" id="roi">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="eyebrow">● ROI SIMULATOR</span>
+      <h2>우리 공장은 얼마나 아낄 수 있을까?</h2>
+      <p>슬라이더를 움직여 보세요. 비전검사 도입 시 연간 절감액과 투자회수 기간을 바로 계산합니다.</p>
+    </div>
+    <div class="roi-grid">
+      <div class="roi-card rv">
+        <h3>📊 생산 조건 입력</h3>
+        <div class="sub">현재 육안검사 기준 수치를 입력하세요</div>
+        <div class="f-row"><label>일 생산량 <output id="oQty">10,000 개/일</output></label><input type="range" id="rQty" min="1000" max="100000" step="1000" value="10000"></div>
+        <div class="f-row"><label>현재 불량 유출률 <output id="oNg">2.0 %</output></label><input type="range" id="rNg" min="1" max="100" value="20"></div>
+        <div class="f-row"><label>검사 인원 <output id="oMan">4 명 (2교대)</output></label><input type="range" id="rMan" min="1" max="20" value="4"></div>
+        <div class="f-row"><label>개당 평균 클레임 비용 <output id="oCost">5,000 원</output></label><input type="range" id="rCost" min="500" max="50000" step="500" value="5000"></div>
+      </div>
+      <div class="roi-res rv">
+        <h3>💰 비전검사 도입 시 예상 연간 절감액</h3>
+        <div class="roi-big"><span id="roiSave">0</span><small> 원 / 년</small></div>
+        <div class="roi-rows">
+          <div class="rr"><span>클레임 비용 절감 (유출률 → 0.05%)</span><b class="plus" id="roiClaim">0원</b></div>
+          <div class="rr"><span>인건비 절감 (검사원 → 1명 관리)</span><b class="plus" id="roiLabor">0원</b></div>
+          <div class="rr"><span>예상 투자회수 기간 (Payback)</span><b id="roiPay">-</b></div>
+        </div>
+        <a href="#contact" class="btn btn-p" style="margin-top:22px;width:100%;justify-content:center">이 결과로 정밀 견적 받기 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="eyebrow">● CUSTOMER VOICES</span>
+      <h2>먼저 도입한 고객의 이야기</h2>
+      <p>재구매율 78% · 유지보수 만족도 4.9/5.0</p>
+    </div>
+    <div class="rev-grid">
+      <div class="rev rv"><div class="stars">★★★★★</div><p>육안검사 8명이 하던 일을 카메라 2대가 대신합니다. 과검출 때문에 걱정했는데 한 달 만에 안정화됐고, 클레임이 사실상 제로가 됐어요."</p><div class="who"><div class="ava" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">김</div><div><b>김○훈 생산팀장</b><span>2차전지 파우치 검사 · 도입 2년차</span></div></div></div>
+      <div class="rev rv"><div class="stars">★★★★★</div><p>타사에서 안 된다고 한 고광택 표면 검사를 조명 설계로 해결해줬습니다. 샘플 테스트 리포트가 워낙 정밀해서 경영진 설득도 쉬웠어요."</p><div class="who"><div class="ava" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">박</div><div><b>박○미 품질책임자</b><span>자동차 사출부품 · 도입 1년차</span></div></div></div>
+      <div class="rev rv"><div class="stars">★★★★★</div><p>밤 11시에 라인 멈췄을 때 원격으로 20분 만에 복구해준 게 아직도 기억납니다. 유지보수 대응 하나는 정말 업계 최고예요."</p><div class="who"><div class="ava" style="background:linear-gradient(135deg,#a3e635,#14b8a6)">이</div><div><b>이○준 공장장</b><span>식품 포장 라벨검사 · 도입 3년차</span></div></div></div>
+    </div>
+    <div class="cert rv"><span><b>✓</b> ISO 9001:2015</span><span><b>✓</b> Inno-Biz 기술혁신형</span><span><b>✓</b> 기업부설연구소</span><span><b>✓</b> 특허 27건 · SW등록 15건</span><span><b>✓</b> 스마트공장 공급기업</span></div>
+  </div>
+</section>
+
+<!-- NOTICE -->
+<section style="padding-top:0" id="notice">
+  <div class="wrap">
+    <div class="sec-head rv" style="display:flex;align-items:flex-end;justify-content:space-between;max-width:none">
+      <div><span class="eyebrow">● NEWS</span><h2 style="margin:0">공지 · 소식</h2></div>
+      <a href="#contact" style="font-size:14px;font-weight:700;color:var(--muted)">전체보기 →</a>
+    </div>
+    <div class="notice-grid">
+      <div class="nc rv"><div class="d">2026.11.10</div><span class="k k-n">공지</span><h4>2026 스마트공장 지원사업 2차 접수 시작 · 공급기업 상담 예약 안내</h4></div>
+      <div class="nc rv"><div class="d">2026.10.28</div><span class="k k-e">전시회</span><h4>2026 한국머신비전산업전 참가 · VA-DeepEye® 3.0 라이브 시연</h4></div>
+      <div class="nc rv"><div class="d">2026.10.02</div><span class="k k-t">기술</span><h4>VA-SCAM X1 후속 모델, 고속 25MP 라인스캔 대응 펌웨어 공개</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding-top:0" id="faq">
+  <div class="wrap">
+    <div class="sec-head center rv"><span class="eyebrow">● FAQ</span><h2>자주 묻는 질문</h2></div>
+    <div class="faq-wrap">
+      <div class="faq rv"><button>Q. 불량 샘플이 별로 없는데 AI 학습이 되나요?<i>＋</i></button><div class="a"><div>A. 네. VA-DeepEye®는 양품 위주 학습 + 소량 불량으로 시작하는 Few-shot 방식을 사용해 불량 이미지 50장 수준에서도 학습됩니다. 양산 중 수집되는 이미지로 점진 학습되며, 초기 한 달은 무상 튜닝 기간으로 안정화해 드립니다.</div></div></div>
+      <div class="faq rv"><button>Q. 기존 라인 가동을 멈추지 않고 설치할 수 있나요?<i>＋</i></button><div class="a"><div>A. 대부분 가능합니다. 주말·야간·연휴를 활용한 설치가 기본이며, 오프라인 사전 세팅 후 온라인 전환은 통상 4~8시간이면 완료됩니다. 설치 계획은 사전 현장 실사 후 확정 제안드립니다.</div></div></div>
+      <div class="faq rv"><button>Q. 도입 비용은 어느 정도인가요? 정부지원이 되나요?<i>＋</i></button><div class="a"><div>A. 단일 카메라 간단 검사는 2천만원대부터, 다채널 풀 턴키는 수억원대까지 조건에 따라 다릅니다. 스마트공장 보급사업·제조혁신바우처 등 정부지원금(최대 1억원) 활용 시 자부담을 크게 낮출 수 있으며, 사업계획서 작성도 함께 지원합니다.</div></div></div>
+      <div class="faq rv"><button>Q. 유지보수·A/S는 어떻게 되나요?<i>＋</i></button><div class="a"><div>A. 기본 무상보증 1년(원격+방문)이며, 이후 연간 유지보수 계약 시 24시간 원격 모니터링과 연 4회 정기점검을 제공합니다. 긴급 장애 시 수도권 4시간 이내 방문을 보장합니다.</div></div></div>
+      <div class="faq rv"><button>Q. 타사 장비와 연동(PLC·MES·로봇)이 되나요?<i>＋</i></button><div class="a"><div>A. 미쓰비시·LS·지멘스·키엔스 PLC 전 기종, 주요 MES(EAP/SECS·GEM 포함), 6축·협동·스카라 로봇과 표준 연동 실적이 있습니다. 기존 설비와의 통신 프로토콜은 사전 실사에서 모두 확인합니다.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="sec-head rv"><span class="eyebrow">● CONTACT</span><h2>무료 현장진단 신청</h2><p>샘플 테스트·견적·정부지원 상담까지. 영업일 기준 <b style="color:var(--cyan)">24시간 이내</b>에 전문 엔지니어가 직접 연락드립니다.</p></div>
+    <div class="ct-grid">
+      <div class="ct-info rv">
+        <h3>📞 031-123-4567</h3>
+        <p>평일 09:00 – 18:00 · 주말/공휴일 긴급대응 운영<br>카카오톡 채널 <b style="color:var(--lime)">@비전오토메이션</b> 실시간 상담</p>
+        <div class="ct-li"><span class="ic">📍</span><div><b>본사 · 광학연구소</b>경기도 수원시 영통구 광교로 123, 테크노밸리 B동 7층</div></div>
+        <div class="ct-li"><span class="ic">✉️</span><div><b>이메일</b><a href="mailto:sales@vision-automation.kr">sales@vision-automation.kr</a></div></div>
+        <div class="ct-li"><span class="ic">🏭</span><div><b>생산공장</b>경기도 화성시 동탄산단로 45 (장비 제작·FAT)</div></div>
+        <div class="ct-li"><span class="ic">🎁</span><div><b>지금 신청 시 혜택</b>무상 샘플 테스트 + 광학 리포트 + 구축사례집 PDF 증정</div></div>
+      </div>
+      <form class="qu rv" id="qform" onsubmit="return false">
+        <div class="f2">
+          <div class="fg"><label>회사명 *</label><input id="fCo" placeholder="(주)○○정밀"></div>
+          <div class="fg"><label>담당자명 *</label><input id="fName" placeholder="홍길동"></div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>연락처 *</label><input id="fTel" placeholder="010-0000-0000"></div>
+          <div class="fg"><label>이메일</label><input id="fMail" placeholder="name@company.com"></div>
+        </div>
+        <div class="f2">
+          <div class="fg"><label>관심 솔루션</label><select id="fSol"><option>AI 외관검사</option><option>정밀 치수측정</option><option>OCR·바코드·라벨검증</option><option>로봇 가이던스</option><option>조립유무·실링검사</option><option>3D 형상·높이측정</option><option>잘 모르겠음 (상담 희망)</option></select></div>
+          <div class="fg"><label>희망 도입 시기</label><select><option>1개월 이내</option><option>3개월 이내</option><option>6개월 이내</option><option>내년 이후 / 검토 중</option></select></div>
+        </div>
+        <div class="fg"><label>문의 내용</label><textarea id="fMsg" placeholder="검사 대상 제품, 라인 속도, 현재 불량 유형 등을 적어주시면 더 정확한 상담이 가능합니다."></textarea></div>
+        <label class="agree"><input type="checkbox" id="fAgree" checked> <span>(필수) 상담을 위한 개인정보 수집·이용에 동의합니다. 수집 항목: 회사명·이름·연락처, 보유기간: 상담 완료 후 1년</span></label>
+        <button class="btn btn-p" style="width:100%;justify-content:center;font-size:16px" id="btnQ">무료 현장진단 신청하기 →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <a class="logo" href="#top" style="margin-bottom:16px"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3" stroke="#a3e635"/></svg></span><span class="t">비전오토메이션<small>VISION-AUTOMATION</small></span></a>
+        <div class="ft-info">비전오토메이션 주식회사 · 대표이사 김비전<br>사업자등록번호 123-45-67890 · 경기도 수원시 영통구 광교로 123<br>Tel 031-123-4567 · Fax 031-123-4568<br>© 2026 Vision-Automation Co., Ltd. All rights reserved.</div>
+      </div>
+      <div><h5>솔루션</h5><a href="#solutions">AI 외관검사</a><a href="#solutions">정밀 치수측정</a><a href="#solutions">OCR·라벨검증</a><a href="#solutions">로봇 가이던스</a></div>
+      <div><h5>회사소개</h5><a href="#tech">기술력</a><a href="#cases">레퍼런스</a><a href="#notice">공지·소식</a><a href="#reviews">고객후기</a></div>
+      <div><h5>고객지원</h5><a href="#faq">자주 묻는 질문</a><a href="#contact">도입 문의</a><a href="#roi">ROI 분석</a><a href="#process">도입 절차</a></div>
+    </div>
+    <div class="ft-bot"><span>본 사이트의 시연 화면은 이해를 돕기 위한 시뮬레이션입니다.</span><span><a href="#top">개인정보처리방침</a> · <a href="#top">이용약관</a> · <a href="#top">이메일무단수집거부</a></span></div>
+  </div>
+</footer>
+
+<div class="float-btns">
+  <button class="fbtn talk" title="상담 신청" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">💬</button>
+  <button class="fbtn" title="맨 위로" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modal-bg" onclick="closeModal()"></div>
+  <div class="modal-box"><div class="ok-ic">✓</div><h3>신청이 접수되었습니다</h3><p id="modalMsg">영업일 기준 24시간 이내에<br>담당 엔지니어가 직접 연락드리겠습니다.</p><button class="btn btn-p" style="width:100%;justify-content:center" onclick="closeModal()">확인</button></div>
+</div>
+
+<script>
+// ---------- header / menu ----------
+const hd=document.getElementById('hd'),menu=document.getElementById('menu');
+addEventListener('scroll',()=>hd.classList.toggle('scrolled',scrollY>10));
+document.getElementById('hamb').onclick=()=>menu.classList.toggle('show');
+menu.querySelectorAll('a').forEach(a=>a.onclick=()=>menu.classList.remove('show'));
+// marquee duplicate
+const mq=document.getElementById('mq');mq.innerHTML+=mq.innerHTML;
+// ---------- reveal ----------
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+// ---------- counters ----------
+const cio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;cio.unobserve(e.target);
+  const el=e.target,to=parseFloat(el.dataset.to),dec=parseInt(el.dataset.dec||0),t0=performance.now();
+  (function tick(t){const p=Math.min(1,(t-t0)/1400),v=to*(1-Math.pow(1-p,3));el.textContent=v.toFixed(dec).replace(/\B(?=(\d{3})+(?!\d))/g,',');if(p<1)requestAnimationFrame(tick)})(t0);
+}),{threshold:.5});
+document.querySelectorAll('.cnt').forEach(el=>cio.observe(el));
+// pipe bar
+const pb=document.getElementById('pipeBar');
+new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){pb.style.width='100%';o.disconnect()}}),{threshold:.4}).observe(pb);
+
+// ---------- inspection simulator ----------
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let running=true,items=[],okN=0,ngN=0,startT=Date.now(),frame=0;
+const DEF=['스크래치','찍힘','이물','변색','크랙','덴트'];
+function spawn(){
+  const sen=document.getElementById('sen').value/10;
+  const ng=Math.random()< (0.04+sen*0.10);
+  items.push({x:cv.width+40,y:118+Math.random()*70,w:64+Math.random()*30,h:52+Math.random()*22,
+    id:'P-'+String(Math.floor(Math.random()*90000)+10000),ng,
+    def:DEF[Math.floor(Math.random()*DEF.length)],
+    conf:ng?(86+Math.random()*13):(97+Math.random()*2.9),born:frame});
+}
+function draw(){
+  frame++;
+  const spd=parseInt(document.getElementById('spd').value);
+  ctx.fillStyle='#04070d';ctx.fillRect(0,0,cv.width,cv.height);
+  // grid
+  ctx.strokeStyle='rgba(148,163,184,.07)';ctx.lineWidth=1;
+  for(let x=0;x<cv.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke()}
+  for(let y=0;y<cv.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cv.width,y);ctx.stroke()}
+  // conveyor
+  const beltY=100,beltH=120;
+  const g=ctx.createLinearGradient(0,beltY,0,beltY+beltH);
+  g.addColorStop(0,'#0d1830');g.addColorStop(.5,'#122441');g.addColorStop(1,'#0d1830');
+  ctx.fillStyle=g;ctx.fillRect(0,beltY,cv.width,beltH);
+  ctx.fillStyle='rgba(34,211,238,.25)';ctx.fillRect(0,beltY,cv.width,2);ctx.fillRect(0,beltY+beltH-2,cv.width,2);
+  ctx.strokeStyle='rgba(148,163,184,.18)';
+  const off=running?(frame*spd*0.9)%44:0;
+  for(let x=-44;x<cv.width+44;x+=44){ctx.beginPath();ctx.moveTo(x-off,beltY);ctx.lineTo(x-off+20,beltY+beltH);ctx.stroke()}
+  // scan zone
+  const sx=cv.width/2;
+  const sg=ctx.createLinearGradient(sx-60,0,sx+60,0);
+  sg.addColorStop(0,'rgba(34,211,238,0)');sg.addColorStop(.5,'rgba(34,211,238,.13)');sg.addColorStop(1,'rgba(34,211,238,0)');
+  ctx.fillStyle=sg;ctx.fillRect(sx-60,0,120,cv.height);
+  ctx.strokeStyle='rgba(34,211,238,.7)';ctx.setLineDash([6,5]);
+  ctx.beginPath();ctx.moveTo(sx,8);ctx.lineTo(sx,cv.height-8);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(34,211,238,.9)';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+  ctx.fillText('SCAN',sx,22);
+  if(running&&frame%Math.max(14,44-spd*3)===0)spawn();
+  if(running)items.forEach(o=>o.x-=spd*0.9);
+  items=items.filter(o=>o.x+o.w>-60);
+  items.forEach(o=>{
+    const cx=o.x+o.w/2,scanned=cx<sx;
+    // product
+    ctx.fillStyle='#1a2b4a';ctx.strokeStyle=scanned?(o.ng?'#fb7185':'#34d399'):'#3d5a80';ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(o.x,o.y,o.w,o.h,8);ctx.fill();ctx.stroke();
+    ctx.fillStyle='rgba(148,163,184,.35)';
+    ctx.fillRect(o.x+10,o.y+10,o.w-20,6);ctx.fillRect(o.x+10,o.y+22,o.w-30,5);
+    ctx.fillStyle='rgba(34,211,238,.5)';ctx.beginPath();ctx.arc(o.x+o.w-14,o.y+o.h-13,5,0,7);ctx.fill();
+    if(o.ng){ctx.strokeStyle='rgba(251,113,133,.9)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(o.x+12,o.y+o.h-12);ctx.lineTo(o.x+34,o.y+18);ctx.moveTo(o.x+20,o.y+o.h-10);ctx.lineTo(o.x+38,o.y+24);ctx.stroke()}
+    if(scanned){
+      const c=o.ng?'251,113,133':'52,211,153';
+      ctx.strokeStyle=`rgba(${c},.95)`;ctx.lineWidth=2;
+      ctx.beginPath();ctx.roundRect(o.x-6,o.y-8,o.w+12,o.h+16,10);ctx.stroke();
+      ctx.fillStyle=`rgba(${c},.95)`;
+      const label=(o.ng?'NG · '+o.def:'OK')+' '+o.conf.toFixed(1)+'%';
+      ctx.font='bold 11px sans-serif';
+      const tw=ctx.measureText(label).width+14;
+      let lx=Math.min(Math.max(o.x,4),cv.width-tw-4);
+      ctx.beginPath();ctx.roundRect(lx,o.y-30,tw,19,6);ctx.fill();
+      ctx.fillStyle='#04070d';ctx.textAlign='left';ctx.fillText(label,lx+7,o.y-16);
+      // corner ticks
+      ctx.strokeStyle=`rgba(${c},1)`;ctx.lineWidth=3;
+      const L=12,x0=o.x-6,y0=o.y-8,x1=o.x+o.w+6,y1=o.y+o.h+8;
+      ctx.beginPath();
+      ctx.moveTo(x0,y0+L);ctx.lineTo(x0,y0);ctx.lineTo(x0+L,y0);
+      ctx.moveTo(x1-L,y0);ctx.lineTo(x1,y0);ctx.lineTo(x1,y0+L);
+      ctx.moveTo(x1,y1-L);ctx.lineTo(x1,y1);ctx.lineTo(x1-L,y1);
+      ctx.moveTo(x0+L,y1);ctx.lineTo(x0,y1);ctx.lineTo(x0,y1-L);ctx.stroke();
+    }
+    if(!o.counted&&cx<sx-4){o.counted=true;o.ng?ngN++:okN++;
+      document.getElementById('mOk').textContent=okN.toLocaleString();
+      document.getElementById('mNg').textContent=ngN.toLocaleString();
+      const t=okN+ngN;
+      document.getElementById('mYield').textContent=(t?okN/t*100:100).toFixed(1)+'%';
+      document.getElementById('mTakt').textContent=Math.round(t/((Date.now()-startT)/1000)*3600).toLocaleString();
+    }
+  });
+  // HUD
+  ctx.fillStyle='rgba(4,7,13,.75)';ctx.fillRect(10,cv.height-34,196,24);
+  ctx.strokeStyle='rgba(34,211,238,.35)';ctx.strokeRect(10,cv.height-34,196,24);
+  ctx.fillStyle='#7dd3fc';ctx.font='bold 11px monospace';ctx.textAlign='left';
+  ctx.fillText('EXP 2.4ms  GAIN 1.2x  60fps',20,cv.height-18);
+  ctx.fillStyle='rgba(4,7,13,.75)';ctx.fillRect(cv.width-150,cv.height-34,140,24);
+  ctx.strokeStyle=running?'rgba(163,230,53,.4)':'rgba(251,113,133,.4)';ctx.strokeRect(cv.width-150,cv.height-34,140,24);
+  ctx.fillStyle=running?'#a3e635':'#fb7185';
+  ctx.fillText(running?'● RUNNING':'■ PAUSED',cv.width-138,cv.height-18);
+  requestAnimationFrame(draw);
+}
+for(let i=0;i<5;i++){spawn();items[i].x=80+i*130}
+requestAnimationFrame(draw);
+document.getElementById('btnRun').onclick=e=>{running=!running;e.target.textContent=running?'⏸ 일시정지':'▶ 재시작';e.target.classList.toggle('on',running)};
+document.getElementById('btnReset').onclick=()=>{okN=0;ngN=0;startT=Date.now();items=[];document.getElementById('mOk').textContent='0';document.getElementById('mNg').textContent='0';document.getElementById('mYield').textContent='100.0%';document.getElementById('mTakt').textContent='0'};
+
+// ---------- cases tabs ----------
+const CASES=[
+ {co:'ECOCELLTECH · 2차전지 파우치/캔 검사',h:'파우치 실링 불량 유출률 0.4% → 0.02%',d:'전수검사 전환과 동시에 120PPM 고속 라인을 멈추지 않는 인라인 검사가 핵심 과제였습니다. 듀얼 카메라 + 딥러닝 조합으로 실링·덴트·이물을 동시 판정합니다.',
+  n:[['120','PPM 대응속도'],['0.02%','불량 유출률'],['-6명','검사인력 절감']],
+  side:[['미래디스플레이 · 패널 Mura 검사','딥러닝 휘도 분석으로 미세 Mura 검출, 삼성급 판정 기준 통과', ['검출률 99.5%','오판 0.2%']],['대성일렉트로닉스 · 커넥터 핀 검사','3D 높이측정으로 핀 들뜸·휘어짐 전수 검사, 해외 클레임 제로', ['UPH 3,600','클레임 0건']]]},
+ {co:'KOREA MOTORS · 자동차 사출/단조부품',h:'육안 8명 → 무인 전수검사로 전환',d:'고광택 크롬 표면의 미세 스크래치는 기존 룰베이스로 불가능했던 영역. 동축+돔 복합조명과 VA-DeepEye®로 해결했습니다.',
+  n:[['30배','검사 속도 향상'],['99.9%','검출 정확도'],['8개월','투자금 회수']],
+  side:[['한빛세미텍 · 리드프레임 검사','±5㎛ 치수측정 + 외관 동시 판정, 측정 리포트 자동 발행', ['정밀도 ±5㎛','리포트 자동화']],['태양정공 · 단조 크랙 검사','자분탐상 대체 비파괴 검사로 공정시간 70% 단축', ['시간 -70%',' 친환경']] ]},
+ {co:'GREENBIO · 식품/제약 포장검사',h:'날짜 오인쇄 유출, 1년 연속 0건',d:'고속 포장기 위 흔들리는 파우치의 날짜·바코드를 읽어야 하는 난제. 500fps 고속 카메라와 모션 보정 OCR로 해결했습니다.',
+  n:[['300','PPM 판독 속도'],['99.7%','난독 인식률'],['0건','1년간 유출 클레임']],
+  side:[['뷰티랩코리아 · 화장품 라벨검증','전 품목 라벨 아트워크 자동 대조, 리콜 리스크 제거', ['전수 대조','이력 5년 보관']],['신선F&B · 실링/이물 검사','X-ray 연계 실링·금속이물 복합 검사 턴키', ['복합 판정','HACCP 대응']]]},
+ {co:'LOGISQUARE · 물류 허브 자동분류',h:'송장 오분류율 1.2% → 0.05%',d:'찌그러지고 젖은 송장도 읽는 딥러닝 OCR + 6면 바코드 리더. 분류기 40구간과 실시간 연동됩니다.',
+  n:[['2.4만','시간당 처리량'],['0.05%','오분류율'],['24h','무중단 가동']],
+  side:[['이커머스C사 · 반품 검수 자동화','외관+구성품 유무 AI 판정으로 반품 처리 3배 고속화', ['처리 3배↑','인력 -50%']],['3PL D사 · 파렛트 라벨검사','지게차 이동 중 원거리 바코드 판독 시스템', ['15m 판독','실시간 연동']]]}
+];
+function renderCase(i){
+  const c=CASES[i];
+  document.getElementById('caseMain').innerHTML=`<div class="co">${c.co}</div><h3>${c.h}</h3><p>${c.d}</p>
+    <div class="case-nums">${c.n.map(n=>`<div class="cn"><b>${n[0]}</b><span>${n[1]}</span></div>`).join('')}</div>
+    <a href="#contact" class="btn btn-p btn-sm">유사 공정 상담받기 →</a>`;
+  document.getElementById('caseSide').innerHTML=c.side.map(s=>`<div class="mini"><div class="co">${s[0]}</div><h4>${s[1].split('·')[0]}</h4><p>${s[1]}</p><div class="res">${s[2].map(r=>`<span>✓ ${r}</span>`).join('')}</div></div>`).join('');
+}
+renderCase(0);
+document.querySelectorAll('#tabs .tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');renderCase(+t.dataset.c);
+});
+
+// ---------- FAQ ----------
+document.querySelectorAll('.faq').forEach(f=>{
+  const btn=f.querySelector('button'),a=f.querySelector('.a');
+  btn.onclick=()=>{
+    const open=f.classList.contains('open');
+    document.querySelectorAll('.faq').forEach(x=>{x.classList.remove('open');x.querySelector('.a').style.maxHeight=null});
+    if(!open){f.classList.add('open');a.style.maxHeight=a.scrollHeight+'px'}
+  };
+});
+
+// ---------- ROI ----------
+const fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+function calcROI(){
+  const qty=+document.getElementById('rQty').value,
+        ng=+document.getElementById('rNg').value/10,
+        man=+document.getElementById('rMan').value,
+        cost=+document.getElementById('rCost').value;
+  document.getElementById('oQty').textContent=qty.toLocaleString()+' 개/일';
+  document.getElementById('oNg').textContent=ng.toFixed(1)+' %';
+  document.getElementById('oMan').textContent=man+' 명 (2교대)';
+  document.getElementById('oCost').textContent=cost.toLocaleString()+' 원';
+  const days=250,after=0.05;
+  const claim=Math.max(0,(qty*(ng-after)/100)*days*cost);
+  const labor=Math.max(0,(man-1))*36_000_000;
+  const save=claim+labor;
+  document.getElementById('roiSave').textContent=fmt(save).replace('원','');
+  document.getElementById('roiClaim').textContent='+ '+fmt(claim);
+  document.getElementById('roiLabor').textContent='+ '+fmt(labor);
+  const invest=85_000_000;
+  document.getElementById('roiPay').textContent=save>0?('약 '+(invest/save*12).toFixed(1)+'개월'):'-';
+}
+['rQty','rNg','rMan','rCost'].forEach(id=>document.getElementById(id).addEventListener('input',calcROI));
+calcROI();
+
+// ---------- form ----------
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3200)}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('btnQ').onclick=()=>{
+  const co=document.getElementById('fCo').value.trim(),nm=document.getElementById('fName').value.trim(),tel=document.getElementById('fTel').value.trim();
+  if(!co||!nm||!tel){toast('⚠️ 회사명·담당자명·연락처는 필수입니다');return}
+  if(!document.getElementById('fAgree').checked){toast('⚠️ 개인정보 수집·이용에 동의해 주세요');return}
+  document.getElementById('modalMsg').innerHTML=`<b style="color:var(--lime)">${co} ${nm}님</b>, 신청이 접수되었습니다.<br>영업일 기준 24시간 이내에 담당 엔지니어가<br><b>${tel}</b>로 연락드리겠습니다.`;
+  document.getElementById('modal').classList.add('show');
+};
+</script>
 </body>
 </html>
